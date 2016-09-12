@@ -1,23 +1,22 @@
-const colors = ['black', 'yellow', 'orange', 'green', 'cyan', 'blue', 'magenta', 'purple', 'brown', 'red'];
+const colors = ['aliceblue', 'blue', 'red', 'green', 'purple', 'maroon', 'cyan', 'black', 'magenta', 'gray'];
 const title = 'C o l o r s';
 const size = 10;
 
 class Square extends React.Component {
   constructor(props) {
     super(props);
-
+    this.state = {};
     this.toggleLight = this.toggleLight.bind(this);
   }
 
   toggleLight() {
-    this.props.toggleLights(this.props.x, this.props.y);
+    this.props.toggleLights(this.props.x, this.props.y, this.props.index);
   }
 
   render() {
     /* Inline dynamic style for Square and Text */
     const squareStyle = {
-      background: colors[this.props.index],
-      background: 'gray',
+      background: this.props.reveal[this.props.x][this.props.y] ? colors[this.props.index] : 'dimgray',
     }
     const textStyle = {
       color: (colors[this.props.index] === 'yellow' ||
@@ -35,44 +34,56 @@ class Square extends React.Component {
 const TableRow = (props) => (
   <tr>
     <td>
-      {props.sequence.map((index, y) =>
-        <Square index={index} x={props.x} y={y} key={y} toggleLights={props.toggleLights}/>)}
+      {props.sequence.map((index, x) =>
+        <Square index={index} y={props.y} x={x} key={x} reveal={props.reveal} toggleLights={props.toggleLights}/>)}
     </td>
   </tr>
 );
+
+const makeEmptyMatrix = (n) => {
+  return _.range(n).map(() => {
+    return _.range(n).map(() => false);
+  });
+};
+
+const revealSquare = (x, y) => {
+  grid[x][y] = true;
+}
+
+const grid = makeEmptyMatrix(size);
 
 class Board extends React.Component {
   constructor(props) {
     super(props);
 
-    // this.state = {grid}
+    this.state = {
+      grid: grid
+    }
     this.toggleLights = this.toggleLights.bind(this);
   }
 
-  toggleLights(x, y) {
-    console.log(x, y);
-  }
+  toggleLights(x, y, z) {
+    if (z === 0) {
+      for (let j = -1; j <= 1; j++) {
+        for (let i = -1; i <= 1; i++) {
+          if (x + i >= 0 && x + i < size && y + j >= 0 && y + j < size) {
+            revealSquare(x + i, y + j);
+          }
+        }
+      }
+    } else {
+      revealSquare(x, y);
+    }
 
-  // toggleLights(x, y) {
-  //   grid[x][y] = grid[x][y] ? 0 : 1;
-  //   // console.log(grid[x][y]);
-  //   for (let i = -1; i <= 1; i += 2) {
-  //     if (y + i < size && y + i >= 0) {
-  //       grid[x][y + i] = grid[x][y + i] ? 0 : 1;
-  //     }
-  //     if (x + i < size && x + i >= 0) {
-  //       grid[x + i][y] =  grid[x + i][y] ? 0 : 1;
-  //     }
-  //   }
-  //   this.setState({grid});
-  // }
+    this.setState({grid: grid});
+  }
 
   render() {
     return (
       <table>
         <tbody>
         {this.props.data.map((sequence, index) =>
-          <TableRow sequence={sequence} x={index} key={index} toggleLights={this.toggleLights}/>)}
+          <TableRow sequence={sequence} y={index} key={index} reveal={grid} toggleLights={this.toggleLights}/>)}
         </tbody>
       </table>
     );
