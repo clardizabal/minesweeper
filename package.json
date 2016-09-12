@@ -1,0 +1,16 @@
+{
+  "name": "holisticparallelogram",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "mocha ./tests/app.js"
+  },
+  "dependencies": {
+    "babel-core": "^6.7.7",
+    "chai": "^3.5.0",
+    "chai-things": "^0.2.0",
+    "mocha": "^2.4.5",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.1",
+    "underscore": "^1.8.3"
+  }
+}

@@ -1,12 +1,9 @@
-// var miniBoard = [[0, 0, 9], [9, 0, 9], [9, 0, 0]];
+const n = 10;
+const numberOfMines = 10;
 
-var board;
-var n = 9;
-var numberOfMines = 10;
-
-var generateRandomIndices = function() {
-  var randomRow = Math.floor(Math.random() * n);
-  var randomCol = Math.floor(Math.random() * n);
+const generateRandomIndices = () => {
+  let randomRow = Math.floor(Math.random() * n);
+  let randomCol = Math.floor(Math.random() * n);
   if (board[randomRow][randomCol]) {
     generateRandomIndices();
   } else {
@@ -14,17 +11,14 @@ var generateRandomIndices = function() {
   }
 };
 
-var makeEmptyMatrix = function(n) {
-  return _(_.range(n)).map(function() {
-    return _(_.range(n)).map(function() {
-      return 0;
-    });
+const makeEmptyMatrix = (n) => {
+  return _(_.range(n)).map(() => {
+    return _(_.range(n)).map(() => 0);
   });
 };
 
-var countAdjacentMines = function(board, row, col) {
-  // console.log('row: '+row+' col: '+col+' '+board[row][col]);
-  var count = 0;
+const countAdjacentMines = (board, row, col) => {
+  let count = 0;
   //check row above and below
   for (var i = -1; i <= 1; i++) {
     if (row - 1 >= 0 && board[row - 1][col + i] === 9) {
@@ -44,7 +38,7 @@ var countAdjacentMines = function(board, row, col) {
   return count;
 };
 
-var setDigits = function() {
+const setDigits = () => {
   for (var i = 0; i < n; i++) {
     for (var j = 0; j < n; j++) {
       if (board[i][j] !== 9) {
@@ -54,16 +48,37 @@ var setDigits = function() {
   }
 };
 
-board = makeEmptyMatrix(n);
-// add 10 mines for a 9 x 9 board
+const board = makeEmptyMatrix(n);
+// add 10 mines for a 10 x 10 board
 for (var i = 0; i < numberOfMines; i++) {
   // generate 10 random places.
   generateRandomIndices();
 }
 setDigits();
 
-var App = () => (
-  <Board data={board}/>
+const title = 'M i n e s w e e p e r'
+
+const Header = () => (
+  <div id='header'>
+    <div id='title'>{title}</div>
+  </div>
+);
+
+const Footer = () => (
+  <footer>
+    <div>
+      10 x 10, 50px by 50px squares. Click on a square and watch it transistion into another color. Built with&nbsp;
+      <a href="https://facebook.github.io/react/">React.js</a>
+    </div>
+  </footer>
+);
+
+const App = () => (
+  <div>
+    <Header/>
+    <Board data={board}/>
+    <Footer/>
+  </div>
 );
 
 ReactDOM.render(<App />, document.getElementById('app'));
